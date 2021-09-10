@@ -1,0 +1,31 @@
+canvas {
+  border-style: solid;
+  border-width: 0.5px;
+  border-color: #e0e0e0;
+}
+
+
+div.mdl-card {
+  width: calc(100% - 20px); /* FIXME */
+}
+div.mdl-card {
+  margin: 10px 10px 10px 10px;
+  padding: 10px 10px 10px 10px;
+}
+
+/* Icon sizes */
+.material-icons-round.md-18 { font-size: 18px; }
+.material-icons-round.md-24 { font-size: 24px; }
+.material-icons-round.md-36 { font-size: 36px; }
+.material-icons-round.md-48 { font-size: 48px; }
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+/* Class to hide while printing */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
