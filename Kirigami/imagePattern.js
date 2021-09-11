@@ -1,12 +1,19 @@
 
-/*
+/*!
   Handles the mapping between an image (uploaded) and a pattern
-  The image is scaled an offset to match the desired size of the pattern
+  The image is scaled and offset to match the desired size of the
+  pattern.
 */
 class imagePattern {
+    
+    // ------------------------------------------------------------------------
+    /*!
+       Constructor
 
-    // ---------------------------------------------------------------------------
-    /*! Constructor */
+       @param img Source image
+       @param context 2Dcontext that the pattern will be used in.
+       @param sizeX, sizeY Target size for the pattern
+    */
     constructor(img, context, sizeX, sizeY) {
         this._imgSource = img;      //!< Source image
         this._context = context;    //!< The target 2D context for the pattern
@@ -28,21 +35,29 @@ class imagePattern {
         this._width = this._fitWidth();
     }
 
-    // ---------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     /*!
-      Largest width so that the source image exactly fits the target area.
+      @return the largest width so that the source image exactly fits the
+      target area. 
      */
     _fitWidth() {
         if (this._imgSource) {
-            var sX = 
-            height
-        } else {
-            
-            return 1;
+            var scale = this._targetSizeX / this._imgSource.width;
+            var targetHeight = this._imgSource.height * scale;
+            if (targetHeight >= this._targetSizeY) {
+                // Height will be higher than needed, fit the width
+                return this._imgSource.width;
+            }
+
+            scale = this._targetSizeY / this._imgSource.height;
+            return this._targetSizeX / scale;
         }
+
+        // No image return a non zero value
+        return 1;
     }
 
-    // ---------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     /*!
       Sets the top coordinate of the sub-image to use.
       Invalidate the pattern.
@@ -54,7 +69,7 @@ class imagePattern {
         }
     }
 
-    // ---------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     /*!
       Sets the left coordinate of the sub-image to use.
       Invalidate the pattern.
@@ -66,7 +81,7 @@ class imagePattern {
         }
     }
 
-    // ---------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     /*!
       Sets the source width of the sub-image to use.
       Invalidate the pattern.
@@ -78,7 +93,7 @@ class imagePattern {
         }
     }
 
-    // ---------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     /*!
       Sets the source width of the sub-image to use.
       Invalidate the pattern.
@@ -87,12 +102,13 @@ class imagePattern {
      */
     set image(val) {
         this._imgSource = val;
+        this._width = this._fitWidth();
         this._pattern = null;
     }
 
-    // ---------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     /*!
-      Return the pattern. Recompute if it is not up to date.
+      @return the pattern. Recompute it if it's not up to date.
      */
     get pattern() {
         if (!this._pattern) {
