@@ -5,7 +5,7 @@
   pattern.
 */
 class imagePattern {
-    
+
     // ------------------------------------------------------------------------
     /*!
        Constructor
@@ -37,8 +37,35 @@ class imagePattern {
 
     // ------------------------------------------------------------------------
     /*!
+      Reset the target size
+    */
+    setTargetSize(sizeX, sizeY) {
+        // If the aspect ratio of the target has change, fit the
+        // source image again.
+        //
+        // Keep the manual image fit if the ratio has not changed
+        // (e.g. change the preview ratio, or re-render at print size)
+        var reset = false
+        if (this._targetSizeX * sizeY != this._targetSizeY * sizeX) {
+            reset = true;
+        }
+
+        this._targetSizeX = sizeX;  //!< Desired pattern resolution
+        this._targetSizeY = sizeY;  //!< Desired pattern resolution
+
+        if (reset) {
+            this._top = 0;
+            this._left = 0;
+            this._width = this._fitWidth();
+        }
+
+        this._pattern = null;
+    }
+
+    // ------------------------------------------------------------------------
+    /*!
       @return the largest width so that the source image exactly fits the
-      target area. 
+      target area.
      */
     _fitWidth() {
         if (this._imgSource) {
@@ -112,7 +139,7 @@ class imagePattern {
      */
     get pattern() {
         if (!this._pattern) {
-            // Create a temporary Canvas to render th pattern
+            // Create a temporary Canvas to render the pattern
             var tmpCanvas = document.createElement("canvas")
             tmpCanvas.width  = this._targetSizeX;
             tmpCanvas.height = this._targetSizeY;

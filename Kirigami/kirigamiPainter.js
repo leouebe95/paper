@@ -123,14 +123,14 @@ class kirigamiPainter {
         this._offsetY = sizeY/2;
         this._scale = sizeY/2 * 1.2; // negative 20% margin
 
-        // Re-render the patterns at the right size
+        // Set the patterns size. It may have changed.
         if (this._pattern[Location.LEFT]) {
-            this._pattern[Location.LEFT].width = this._sizeX/2;
-            this._pattern[Location.LEFT].height = this._sizeY;
+            this._pattern[Location.LEFT].setTargetSize(this._sizeX/2,
+                                                       this._sizeY);
         }
         if (this._pattern[Location.RIGHT]) {
-            this._pattern[Location.RIGHT].width = this._sizeX/2;
-            this._pattern[Location.RIGHT].height = this._sizeY;
+            this._pattern[Location.RIGHT].setTargetSize(this._sizeX/2,
+                                                        this._sizeY);
         }
     }
 

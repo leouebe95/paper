@@ -1,9 +1,12 @@
-/*
-  Main
+/*!
+  Business logic for the Kirigami parameters
 */
-
 class kirigamiLogic {
 
+    // ------------------------------------------------------------------------
+    /*!
+       Constructor
+    */
     constructor() {
         var that = this;
         var canvas = document.getElementById("previewCanvas");
@@ -19,7 +22,11 @@ class kirigamiLogic {
         this._image2Mgr = new kirigamiImgManager(image2, img => that.setImgRight(img));
     }
 
-    // Callback to update the data once the left image is ready
+    // ------------------------------------------------------------------------
+    /*!
+       Callback to update the data once the left image is ready.
+       @param[in] img New image data.
+    */
     setImgLeft(img) {
         this._painter.imageLeft = img;
 
@@ -30,7 +37,11 @@ class kirigamiLogic {
         document.body.dispatchEvent(event);
     }
 
-    // Callback to update the data once the right image is ready
+    // ------------------------------------------------------------------------
+    /*!
+       Callback to update the data once the right image is ready.
+       @param[in] img New image data.
+    */
     setImgRight(img) {
         this._painter.imageRight = img;
 
@@ -41,7 +52,12 @@ class kirigamiLogic {
         document.body.dispatchEvent(event);
     }
 
-    // recompute the resolution, adjust the canvas and display actual resolution
+    // ------------------------------------------------------------------------
+    /*!
+      Recompute the resolution, adjust the canvas and display actual
+      resolution.
+      @param[in] data all the parameters set from the UI.
+    */
     doResolution(data) {
         // paper size in inches
         const resolutions = {
@@ -50,28 +66,28 @@ class kirigamiLogic {
             'A3':     [16.5, 11.7]
         };
 
+
+        var displayRatio = parseInt(data.previewDensity)/100;
         var sX = 0;
         var sY = 0;
+
         // Recompute the resolution
         if (data.pageFormat in resolutions) {
-            sX = resolutions[data.pageFormat][0];
-            sY = resolutions[data.pageFormat][1];
+            let dpi = parseInt(data.density);
+            sX = Math.floor(resolutions[data.pageFormat][0] * dpi);
+            sY = Math.floor(resolutions[data.pageFormat][1] * dpi);
         } else {
             console.error('Unknown Page Format', data.pageFormat);
         }
 
-        var dpi = parseInt(data.density);
-        sX = Math.floor(sX * dpi);
-        sY = Math.floor(sY * dpi);
+        var spX = Math.floor(sX * displayRatio);
+        var spY = Math.floor(sY * displayRatio);
         var elem = document.getElementById('resolution');
-        elem.innerText = `Actual pixel resolution ${sX}x${sY}`;
+        elem.innerHTML = `Print resolution ${sX}x${sY}<br/>Preview resolution ${spX}x${spY}`;
 
-        var displayRatio = parseInt(data.previewDensity)/100;
-        sX = Math.floor(sX * displayRatio);
-        sY = Math.floor(sY * displayRatio);
         elem = document.getElementById('previewCanvas');
-        elem.setAttribute('width', sX);
-        elem.setAttribute('height', sY);
+        elem.setAttribute('width', spX);
+        elem.setAttribute('height', spY);
     }
 
     // Update the enable state of the Display Tab

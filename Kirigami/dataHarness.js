@@ -1,7 +1,6 @@
 /*
   Binds UI elements to data
 */
-
 class dataHarness {
 
     // Constructor
