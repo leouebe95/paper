@@ -4,6 +4,9 @@ canvas {
   border-color: #e0e0e0;
 }
 
+table.controlPad {
+  width: 10px;
+}
 
 div.mdl-card {
   width: calc(100% - 20px); /* FIXME */

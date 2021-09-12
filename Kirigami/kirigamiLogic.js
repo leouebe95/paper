@@ -93,7 +93,7 @@ class kirigamiLogic {
     // Update the enable state of the Display Tab
     doDisplayState(data) {
         var disabled = ! data.enableImages;
-        var controls = ["enableBackground", "image1", "image2", "maxX", "maxY", "minX", "minY"];
+        var controls = ["enableBackground", "image1", "image2"];
         controls.forEach(control => {
             var elem = document.getElementById(control);
             elem.disabled = disabled;
@@ -112,6 +112,8 @@ class kirigamiLogic {
         var sX = parseInt(canvas.getAttribute('width'));
         var sY = parseInt(canvas.getAttribute('height'));
         this._painter.setSize(sX, sY);
+        this._painter.imageLeftParam = data.image1control;
+        this._painter.imageRightParam = data.image2control;
         this._painter.setTextureMode(data.enableImages, data.enableBackground);
         this._painter.geometry = this._builder.geometry;
 

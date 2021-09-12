@@ -1,4 +1,3 @@
-
 /*!
   Handles the mapping between an image (uploaded) and a pattern
   The image is scaled and offset to match the desired size of the
@@ -38,6 +37,7 @@ class imagePattern {
     // ------------------------------------------------------------------------
     /*!
       Reset the target size
+      @param[in] sizeX,sizeY new size of the rendered pattern.
     */
     setTargetSize(sizeX, sizeY) {
         // If the aspect ratio of the target has change, fit the
@@ -59,6 +59,7 @@ class imagePattern {
             this._width = this._fitWidth();
         }
 
+        // Need to re-render the pattern
         this._pattern = null;
     }
 
@@ -91,7 +92,7 @@ class imagePattern {
      */
     set top(val) {
         if (top != this._top) {
-            this._top = top;
+            this._top = val;
             this._pattern = null;
         }
     }
@@ -139,21 +140,25 @@ class imagePattern {
      */
     get pattern() {
         if (!this._pattern) {
-            // Create a temporary Canvas to render the pattern
-            var tmpCanvas = document.createElement("canvas")
-            tmpCanvas.width  = this._targetSizeX;
-            tmpCanvas.height = this._targetSizeY;
-            var tmpCtx = tmpCanvas.getContext("2d");
+            if (!this._imgSource) {
+                this._pattern = "white";
+            } else {
+                // Create temporary Canvas to render the pattern
+                var tmpCanvas = document.createElement("canvas")
+                tmpCanvas.width  = this._targetSizeX;
+                tmpCanvas.height = this._targetSizeY;
+                var tmpCtx = tmpCanvas.getContext("2d");
 
-            // Paint a resized version of the image in a canvas to fit the
-            // given size.
-            var sourceHeight = this._width * this._targetSizeY / this._targetSizeX;
-            tmpCtx.drawImage(this._imgSource,
-                             this._left, this._top,
-                             this._width, sourceHeight,
-                             0, 0, this._targetSizeX, this._targetSizeY);
+                // Paint a resized version of the image in a canvas to fit the
+                // given size.
+                var sourceHeight = this._width * this._targetSizeY / this._targetSizeX;
+                tmpCtx.drawImage(this._imgSource,
+                                 this._left, this._top,
+                                 this._width, sourceHeight,
+                                 0, 0, this._targetSizeX, this._targetSizeY);
 
-            this._pattern = this._context.createPattern(tmpCanvas, 'repeat');
+                this._pattern = this._context.createPattern(tmpCanvas, 'repeat');
+            }
         }
         return this._pattern;
     }

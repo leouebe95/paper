@@ -3,22 +3,38 @@
 */
 class dataHarness {
 
-    // Constructor
+    // ------------------------------------------------------------------------
+    /*!
+       Constructor
+
+       @param changeCB function to call when data changes
+    */
     constructor(changeCB) {
         this._changeCB = changeCB;
         this.data = {};
     }
 
-    // Return a normalized type for this element
+    // ------------------------------------------------------------------------
+    /*!
+      @param[in] elem the DOMelement to compute the type for
+      @return a normalized type for this element
+    */
     _elemType(elem) {
         switch (elem.tagName) {
-        case 'INPUT': return elem.getAttribute('type').toLowerCase();
         case 'SELECT': return 'select';
+        case 'INPUT':  return elem.getAttribute('type').toLowerCase();
+        case 'SPAN':   return elem.getAttribute('type').toLowerCase();
         }
+
+        console.error('Unknow type for tag', elem.tagName);
         return null;
     }
 
-    // call a function on all declared UI elements
+    // ------------------------------------------------------------------------
+    /*!
+      @param[in] callback the function to call on each UI element
+      Call a function on all declared UI elements
+    */
     _forAllUIElems(callback) {
         var UIelems = document.getElementsByClassName("UIdata");
         for (var i=0 ; i<UIelems.length; i++ ) {
@@ -27,7 +43,11 @@ class dataHarness {
         }
     }
 
-    // Add the proper listener to the UI element
+    // ------------------------------------------------------------------------
+    /*!
+      @param[in] elem the DOMelement to add the listener to
+      Add the proper listener to the UI element
+    */
     _bind(elem) {
         var that = this;
         switch(this._elemType(elem)) {
@@ -36,6 +56,7 @@ class dataHarness {
         case 'range':
         case 'select':
         case 'file':
+        case 'controlpad':
             elem.addEventListener("change", event => that.refresh(event));
             break;
 
@@ -44,7 +65,11 @@ class dataHarness {
         }
     }
 
-    // Read and store that element data
+    // ------------------------------------------------------------------------
+    /*!
+      @param[in] elem the DOMelement to read the data from
+      Read and store that element data
+    */
     _readData(elem) {
         var value = null;
         switch(this._elemType(elem)) {
@@ -65,14 +90,21 @@ class dataHarness {
             value = elem.options[elem.selectedIndex].value;
             break;
 
+        case 'controlpad':
+            value = elem.UIharness.value;
+            break;
+
         default:
             console.error("Cannot read data from", this._elemType(elem), elem);
         }
         this.data[elem.id] = value;
     }
 
-    // Recompute the edited data or all of it (event is null)
-    // Refresh the UI
+    // ------------------------------------------------------------------------
+    /*!
+      Recompute the edited data or all of it (event is null)
+      Refresh the UI
+    */
     refresh(event) {
         if (event) {
             this._readData(event.target);
@@ -84,16 +116,21 @@ class dataHarness {
             console.log('Global refresh'); //FIXME:
         }
         this._changeCB(this.data);
-        
+
         console.log(this.data); // FIXME
     }
 
+    // ------------------------------------------------------------------------
+    /*!
+      Add listeners to all UI elements to recompute the data on user input.
+    */
     bind() {
         var that = this;
+
         // Listen to a catch all custom "RefreshPage" event on <body>
         // This provides a way from async function to trigger a refresh
         document.body.addEventListener("RefreshPage", () => that.refresh());
-        
+
         this._forAllUIElems(this._bind);
         // Init the data and apply initial "changes"
         this.refresh();

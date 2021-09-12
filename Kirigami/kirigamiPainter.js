@@ -135,6 +135,21 @@ class kirigamiPainter {
     }
 
     /*!
+      Actual setter code for the left and right image parameters.
+      @param[in] param scale and offset parameters
+      @param[in] Enum which Location.LEFT or Location.RIGHT
+    */
+    _setImageParam(param, which) {
+        if (!this._pattern[which]) {
+            this._pattern[which] = new imagePattern(null, this._context, this._sizeX/2, this._sizeY);
+        }
+        this._pattern[which].left = param.offsetX;
+        this._pattern[which].top  = param.offsetY;
+
+        // FIXME: SCALE
+    }
+
+    /*!
       Actual setter code for the left and right images
       @param[in] Image img A valid image object or null
       @param[in] Enum which Location.LEFT or Location.RIGHT
@@ -153,11 +168,27 @@ class kirigamiPainter {
     }
 
     /*!
+      Setter for the left image parameters
+      @param[in] param object with offset and scale
+    */
+    set imageLeftParam(param) {
+        this._setImageParam(param, Location.LEFT);
+    }
+
+    /*!
       Setter for the left image
       @param[in] Image img a valid image object or null
     */
     set imageLeft(img) {
         this._setImage(img, Location.LEFT);
+    }
+
+    /*!
+      Setter for the left image parameters
+      @param[in] param object with offset and scale
+    */
+    set imageRightParam(param) {
+        this._setImageParam(param, Location.RIGHT);
     }
 
     /*!
